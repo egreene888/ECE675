@@ -1,0 +1,387 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Funwork 1</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-01-28"><meta name="DC.source" content="fw1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Funwork 1</h1><!--introduction--><p>Evan Greene 2020-01-30</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Derivation of the equations of motion</a></li><li><a href="#2">Derivation of the state-space model</a></li></ul></div><h2 id="1">Derivation of the equations of motion</h2><p>The equations modeling the motion of a double inverted pendulum on a cart can be derived from the Lagrangian equations of motion. The equations of motion are given by</p><p><img src="fw1_eq17357295430694293136.png" alt="$$&#xA;\frac{\partial d}{\partial dt} \left( \frac{\partial L}{\partial \dot{q}}&#xA;\right) - \frac{\partial L}{\partial q} = f&#xA;$$"></p><p>Where <img src="fw1_eq11904963258706611165.png" alt="$L$"> is the Lagrangian fucntion <img src="fw1_eq16983901490974243741.png" alt="$L = K - U$">, the difference between kinetic and potential energy, <img src="fw1_eq18096895394918367257.png" alt="$f$"> is the non-conservative force acting on the system, and <img src="fw1_eq15226540192103580117.png" alt="$q$"> is the generalized coordinate used to describe the system.</p><p>For the case of the double-inverted pendulum, the state of the system is described by three generalized coordinates, <img src="fw1_eq12428413953531653171.png" alt="$x$">, <img src="fw1_eq04356345805472844781.png" alt="$\theta_1$">, and <img src="fw1_eq17317125283182739185.png" alt="$\theta_2$">. Therefore, there are three equations of motion.</p><p>To find find the equations of motion, we must first find the kinetic and potential energy of the system. The kinetic energy <img src="fw1_eq14708650610661299862.png" alt="$K = K_0 + K_1 + K_2$">, where <img src="fw1_eq06643176732083333865.png" alt="$K_0$"> is the kinetic energy of the cart and pendulum, <img src="fw1_eq07888892673152018797.png" alt="$K_1$"> is the kinetic energy of mass 1, and <img src="fw1_eq15020051051520174490.png" alt="$K_2$"> is the kinetic energy of mass 2. The value of <img src="fw1_eq06643176732083333865.png" alt="$K_0$"> is</p><p><img src="fw1_eq03995087487121034864.png" alt="$$ K_0 = \frac{1}{2}M \dot{x}^2 $$"></p><p>While the value of <img src="fw1_eq07888892673152018797.png" alt="$K_1$"> is</p><p><img src="fw1_eq07773938240415247702.png" alt="$$&#xA;\begin{array}{rcl}&#xA;K_1 &amp; = &amp; \frac{1}{2}m_1 v_1^2 \\&#xA;&amp; = &amp; \frac{1}{2} m_1 \left[ (\dot x + l_1 \dot \theta_1\cos\theta_1)^2&#xA;+ (l_1 \dot \theta_1 \sin \theta)^2 \right] \\&#xA;&amp; = &amp; \frac{1}{2} m_1 \dot x^2 +&#xA;\frac{1}{2} m_1 l_1^2 \dot \theta_1^2 +&#xA;m_1 l_1 \dot x \dot \theta_1 \cos \theta_1&#xA;\end{array}&#xA;$$"></p><p>and the value of <img src="fw1_eq00029312330466126760.png" alt="$k_2$"> is</p><p><img src="fw1_eq07782592241914267246.png" alt="$$&#xA;\begin{array}{rcl}&#xA;K_2 &amp; = &amp; \frac{1}{2}m_2 v_2^2 \\&#xA;&amp; = &amp; \frac{1}{2} m_2 \left[ (\dot x + l_1 \dot \theta_1 \cos \theta_1 +&#xA;l_2 \dot{\theta}_2 \cos \theta_2)^2&#xA;+ (-l_1 \dot \theta_1 \sin \theta_1 -&#xA;l_2 \dot{\theta}_2 \sin \theta_2)^2 \right] \\&#xA;&amp; = &amp; \frac{1}{2} m_2 \dot x^2 + \frac{1}{2} l_1^2 \dot \theta_1^2 +&#xA;\frac{1}{2} m_2 l_2^2 \dot \theta_2^2 +&#xA;m_2 l_1 \dot x \dot \theta_1 \cos \theta_1 +&#xA;m_2 l_2 \dot x \dot \theta_2 \cos \theta_2 \\ &amp;  &amp; \quad + \,&#xA;m_2 l_1 l_2 \dot \theta_1 \dot \theta_2 \cos (\theta_2 - \theta_1)&#xA;\end{array}&#xA;$$"></p><p>Meanwhile, the only form of potential energy present in the system is gravitational potential energy, which is associated with the height of each of the masses.</p><p><img src="fw1_eq10309693559197153635.png" alt="$$ U = m_1 g l_1 \cos \theta_1 +&#xA;m_2 g \left( l_1 \cos \theta_1 + l_2 \cos \theta_2 \right) $$"></p><p>The Lagrangian function is therefore</p><p><img src="fw1_eq08487220218992793702.png" alt="$$&#xA;\begin{array}{rcl}&#xA;L &amp; = &amp; \frac{1}{2} \left(M + m_1 + m_2\right) \dot{x}^2&#xA;+ \frac{1}{2} (m_1 + m_2) l_1^2 \dot{\theta}_1^2&#xA;+ \frac{1}{2} m_2 l_2^2 \dot{\theta}_2^2&#xA;\\&amp;&amp; \quad&#xA;+ (m_1 + m_2) l_1 \dot x \dot \theta_1 \cos \theta_1&#xA;+ m_2 l_2 \dot x \dot \theta_2 \cos \theta_2&#xA;+ m_2 l_1 l_2 \dot \theta_1 \dot \theta_2 \cos (\theta_2 - \theta_1)&#xA;\\&amp;&amp; \quad&#xA;- (m_1 + m_2) g l_1 \cos \theta_1 + m_2 g l_2 \cos \theta_2&#xA;\end{array}&#xA;$$"></p><p>We can now find the equations of motion from the Lagrangian. The first equation is</p><p><img src="fw1_eq02444166803957103744.png" alt="$$&#xA;\frac{\partial d}{\partial dt} \left( \frac{\partial L}{\partial \dot{x}}&#xA;\right) - \frac{\partial L}{\partial x} = u&#xA;$$"></p><p>We evaluate this function by finding</p><p><img src="fw1_eq09969790357765600325.png" alt="$$&#xA;\frac{\partial L}{\partial \dot{x}} = (M + m_1 + m_2) \dot x&#xA;+ (m_1 + m_2) l_1 \dot \theta_1 \cos \theta_1&#xA;+ m_2l_2 \dot \theta_2 \cos \theta_2&#xA;$$"></p><p><img src="fw1_eq01548294627108358839.png" alt="$$&#xA;\begin{array}{rcl}&#xA;\frac{d}{dt}\frac{\partial L}{\partial \dot{x}} &amp; = &amp;(M + m_1 + m_2)\ddot{x}&#xA;+ (m_1 + m_2) l_1 \ddot \theta_1 \cos \theta_1&#xA;+ m_2 l_2 \ddot \theta_2 \cos \theta_2&#xA;\\&amp;&amp; \quad&#xA;- (m_1 + m_2) l_1 \dot \theta_1^2 \sin \theta_1&#xA;+ m_2 l_2 \dot \theta_2^2 \sin \theta_2&#xA;\end{array}&#xA;$$"></p><p><img src="fw1_eq15007098570465757118.png" alt="$$&#xA;\frac{\partial L}{\partial x} = 0&#xA;$$"></p><p>Therefore, the first equation of motion is</p><p><img src="fw1_eq07749363582944660473.png" alt="$$&#xA;\begin{array}{rcl}&#xA;u &amp; = &amp;&#xA;(M + m_1 + m_2)\ddot{x}&#xA;+ (m_1 + m_2) l_1 \ddot \theta_1 \cos \theta_1&#xA;+ m_2 l_2 \ddot \theta_2 \cos \theta_2&#xA;\\&amp;&amp; \quad&#xA;- (m_1 + m_2) l_1 \dot \theta_1^2 \sin \theta_1&#xA;+ m_2 l_2 \dot \theta_2^2 \sin \theta_2&#xA;\end{array}&#xA;$$"></p><p>We can find the second equation of motion by finding</p><p><img src="fw1_eq00422489902771471526.png" alt="$$&#xA;\begin{array}{rcl}&#xA;\frac{\partial L}{\partial \dot{\theta}_1} &amp; = &amp;&#xA;(M + m_1 + m_2)\dot{x}&#xA;+ (m_1 + m_2) l_1 \dot{\theta}_1&#xA;+ (m_1 + m_2) l_1 \dot \theta_1 \cos \theta_1&#xA;\\&amp;&amp; \quad&#xA;+ m_2 l_2 \dot \theta_2  \cos (\theta_2 - \theta_1)&#xA;\end{array}&#xA;$$"></p><p><img src="fw1_eq01309693539584657896.png" alt="$$&#xA;\begin{array}{rcl}&#xA;\frac{d}{dt} \frac{\partial L}{\partial \dot{\theta}_1} &amp; = &amp;&#xA;(m_1 + m_2) l_1 \ddot x \cos \theta_1&#xA;+ (m_1 + m_2) l_1^2 \ddot \theta_1&#xA;+ m_2 l_1 l_2 \ddot \theta_2 \cos(\theta_2 - \theta_1 )&#xA;\\&amp;&amp; \quad&#xA;- m_2 l_1 l_2 \dot \theta_2^2 \sin(\theta_2 - \theta_1)&#xA;- (m_1 + m_2) \dot x \dot \theta_1 \sin \theta_1&#xA;\\&amp;&amp; \quad&#xA;+ m_2 l_1 l_2 \dot \theta_1 \dot \theta_2 \sin(\theta_2 - \theta_1)&#xA;\end{array}&#xA;$$"></p><p><img src="fw1_eq09084375875230819346.png" alt="$$&#xA;\begin{array}{rcl}&#xA;\frac{\partial L}{\partial \theta_1} &amp; = &amp;&#xA;-(m_1 + m_2) \dot x \dot \theta_1 \sin \theta_1&#xA;+ m_2 l_1 l_2 \dot \theta_1 \dot \theta_2 \sin (\theta_2 - \theta_1)&#xA;\\&amp;&amp; \quad&#xA;+ (m_1 + m_2) g l_1 \sin \theta_1&#xA;\end{array}&#xA;$$"></p><p>The second equation of motion is therefore</p><p><img src="fw1_eq06863592853566948452.png" alt="$$&#xA;\begin{array}{rcl}&#xA;0 &amp;=&amp;&#xA;(m_1 + m_2) l_1 \ddot x \cos \theta_1&#xA;+ (m_1 + m_2) l_1^2 \ddot \theta_1&#xA;+ m_2 l_1 l_2 \ddot \theta_2 \cos(\theta_2 - \theta_1 )&#xA;\\&amp;&amp; \quad&#xA;- m_2 l_1 l_2 \dot \theta_2^2 \sin(\theta_2 - \theta_1)&#xA;+ (m_1 + m_2) g l_1 \sin \theta_1&#xA;\end{array}&#xA;$$"></p><p>We can find the third equation of motion from</p><p><img src="fw1_eq14489178560546521170.png" alt="$$&#xA;\begin{array}{rcl}&#xA;\frac{\partial L}{\partial \dot{\theta}_2} &amp; = &amp;&#xA;m_2 l_2^2 \dot \theta_2&#xA;+ m_2 l_2 \dot x \cos \theta_2&#xA;+ m_2 l_1 l_2 \dot \theta_2 \cos (\theta_2 - \theta_1)&#xA;\end{array}&#xA;$$"></p><p><img src="fw1_eq16324994236829676867.png" alt="$$&#xA;\begin{array}{rcl}&#xA;\frac{d}{dt} \frac{\partial L}{\partial \dot{\theta}_2} &amp; = &amp;&#xA;m_2 l_2 \ddot x \cos \theta_2&#xA;+ m_2 l_1 l_2 \ddot \theta_1 \cos(\theta_2 - \theta_1)&#xA;+ m_2 l_2 \ddot \theta_2&#xA;\\&amp;&amp; \quad&#xA;+ m_2 l_1 l_2 \dot \theta_1^2 \sin(\theta_2 - \theta_1)&#xA;- m_2 l_2 \dot x \dot \theta_2 \sin \theta_2&#xA;\\&amp;&amp; \quad&#xA;- m_2 l_1 l_2 \dot \theta_1 \dot \theta_2 \sin (\theta_2 - \theta_1)&#xA;\end{array}&#xA;$$"></p><p><img src="fw1_eq16969076170624595593.png" alt="$$&#xA;\begin{array}{rcl}&#xA;\frac{\partial L}{\partial \theta_1} &amp; = &amp;&#xA;- m_2 l_2 \dot x \dot \theta_2 \sin \theta_2&#xA;- m_2 l_1 l_2 \dot \theta_1 \dot \theta_2 \sin (\theta_2 - \theta_1)&#xA;- m_2 g l_2 \sin \theta_2&#xA;\end{array}&#xA;$$"></p><p>The third equaton of motion is therefore</p><p><img src="fw1_eq03715189811776150224.png" alt="$$&#xA;\begin{array}{rcl}&#xA;0 &amp; = &amp;&#xA;m_2 l_2 \ddot x \cos \theta_2&#xA;+ m_2 l_1 l_2 \ddot \theta_1 \cos(\theta_2 - \theta_1)&#xA;+ m_2 l_2 \ddot \theta_2&#xA;\\&amp;&amp; \quad&#xA;+ m_2 l_1 l_2 \dot \theta_1^2 \sin(\theta_2 - \theta_1)&#xA;+ m_2 g l_2 \sin \theta_2&#xA;\end{array}&#xA;$$"></p><h2 id="2">Derivation of the state-space model</h2><p>We can rearrange these equations into the form</p><p><img src="fw1_eq05743506446852106947.png" alt="$$&#xA;\mathbf D (\mathbf q ) \ddot q + \mathbf C (\mathbf q, \mathbf{\dot q})&#xA;+ \mathbf g(\mathbf q) = \mathbf H u&#xA;$$"></p><p>where</p><p><img src="fw1_eq14957721357061947203.png" alt="$$&#xA;\mathbf q = \left[\begin{array}{c}&#xA;x \\ \theta_1 \\ \theta_2&#xA;\end{array} \right]&#xA;$$"></p><p><img src="fw1_eq01116123367697792351.png" alt="$$&#xA;\mathbf D = \left[ \begin{array}{ccc}&#xA;M + m_1 + m_2 &amp;&#xA;(m_1 + m_2) l_1  \cos \theta_1 &amp;&#xA;m_2 l_2  \cos \theta_2 \\&#xA;(m_1 + m_2) l_1 \cos \theta_1 &amp;&#xA;(m_1 + m_2) l_1^2 &amp;&#xA;m_2 l_1 l_2  \cos(\theta_2 - \theta_1 ) \\&#xA;m_2 l_2  \cos \theta_2 &amp;&#xA;m_2 l_1 l_2  \cos(\theta_2 - \theta_1) &amp;&#xA;m_2 l_2&#xA;\end{array} \right]&#xA;$$"></p><p><img src="fw1_eq01083393376275893660.png" alt="$$&#xA;\mathbf C = \left[ \begin{array}{ccc}&#xA;0 &amp;&#xA;- (m_1 + m_2) l_1 \dot \theta_1 \sin \theta_1 &amp;&#xA;m_2 l_2 \dot \theta_2 \sin \theta_2 \\&#xA;0 &amp;&#xA;0 &amp;&#xA;- m_2 l_1 l_2 \dot \theta_2 \sin(\theta_2 - \theta_1) \\&#xA;0 &amp;&#xA;- m_2 l_1 l_2 \dot \theta_1 \sin(\theta_2 - \theta_1) &amp;&#xA;0&#xA;\end{array} \right]&#xA;$$"></p><p><img src="fw1_eq00385420017612187478.png" alt="$$&#xA;\mathbf g = \left[ \begin{array}{c}&#xA;0 \\&#xA;(m_1 + m_2) g l_1 \sin \theta_1 \\&#xA;m_2 g l_2 \sin \theta_2&#xA;\end{array}\right]&#xA;$$"></p><p>and</p><p><img src="fw1_eq01834054156488551006.png" alt="$$ \mathbf H = \left[ \begin{array}{c} 1 \\ 0 \\ 0 \end{array} \right] $$"></p><p>We can transform this model into the state-space format by creating the state vector</p><p><img src="fw1_eq02968906061164669602.png" alt="$$&#xA;\mathbf x =&#xA;\left[ \begin{array}{c} q \\ \dot q \end{array} \right] =&#xA;\left[\begin{array}{c} x \\ \theta_1 \\ \theta_2 \\&#xA;\dot x \\ \dot \theta_1 \\ \dot \theta_2 \end{array}\right]&#xA;$$"></p><p>From our above equations, we can see that</p><p><img src="fw1_eq10857784239360950401.png" alt="$$&#xA;\mathbf{\dot x} =&#xA;\left[ \begin{array}{cc}&#xA;\mathbf 0 &amp; \mathbf I_3 \\&#xA;\mathbf 0 &amp; -\mathbf D^{-1} \mathbf C&#xA;\end{array} \right] x&#xA;+&#xA;\left[ \begin{array}{c}&#xA;\mathbf 0 \\ -\mathbf D^{-1} \mathbf g&#xA;\end{array} \right]&#xA;+&#xA;\left[ \begin{array}{c}&#xA;\mathbf 0 \\ -\mathbf D^{-1} \mathbf H&#xA;\end{array} \right] u&#xA;$$"></p><p>or, in MATLAB syntax</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Funwork 1
+% Evan Greene 
+% 2020-01-30
+
+%% Derivation of the equations of motion
+% 
+% The equations modeling the motion of a double inverted pendulum on a cart
+% can be derived from the Lagrangian equations of motion. The equations of
+% motion are given by
+% 
+% $$
+% \frac{\partial d}{\partial dt} \left( \frac{\partial L}{\partial \dot{q}}
+% \right) - \frac{\partial L}{\partial q} = f
+% $$
+% 
+% Where $L$ is the Lagrangian fucntion $L = K - U$, the difference between
+% kinetic and potential energy, $f$ is the non-conservative force acting
+% on the system, and $q$ is the generalized coordinate used to describe the
+% system.
+% 
+% For the case of the double-inverted pendulum, the state of the system is
+% described by three generalized coordinates, $x$, $\theta_1$, and
+% $\theta_2$. Therefore, there are three equations of motion.
+% 
+% To find find the equations of motion, we must first find the kinetic and
+% potential energy of the system. The kinetic energy $K = K_0 + K_1 + K_2$,
+% where $K_0$ is the kinetic energy of the cart
+% and pendulum, $K_1$ is the kinetic energy of mass 1,
+% and $K_2$ is the kinetic energy of mass 2. The value of
+% $K_0$ is
+% 
+% $$ K_0 = \frac{1}{2}M \dot{x}^2 $$
+% 
+% While the value of $K_1$ is
+% 
+% $$
+% \begin{array}{rcl}
+% K_1 & = & \frac{1}{2}m_1 v_1^2 \\
+% & = & \frac{1}{2} m_1 \left[ (\dot x + l_1 \dot \theta_1\cos\theta_1)^2
+% + (l_1 \dot \theta_1 \sin \theta)^2 \right] \\
+% & = & \frac{1}{2} m_1 \dot x^2 +
+% \frac{1}{2} m_1 l_1^2 \dot \theta_1^2 +
+% m_1 l_1 \dot x \dot \theta_1 \cos \theta_1
+% \end{array}
+% $$
+% 
+% and the value of $k_2$ is
+% 
+% $$
+% \begin{array}{rcl}
+% K_2 & = & \frac{1}{2}m_2 v_2^2 \\
+% & = & \frac{1}{2} m_2 \left[ (\dot x + l_1 \dot \theta_1 \cos \theta_1 +
+% l_2 \dot{\theta}_2 \cos \theta_2)^2
+% + (-l_1 \dot \theta_1 \sin \theta_1 -
+% l_2 \dot{\theta}_2 \sin \theta_2)^2 \right] \\
+% & = & \frac{1}{2} m_2 \dot x^2 + \frac{1}{2} l_1^2 \dot \theta_1^2 +
+% \frac{1}{2} m_2 l_2^2 \dot \theta_2^2 +
+% m_2 l_1 \dot x \dot \theta_1 \cos \theta_1 +
+% m_2 l_2 \dot x \dot \theta_2 \cos \theta_2 \\ &  & \quad + \,
+% m_2 l_1 l_2 \dot \theta_1 \dot \theta_2 \cos (\theta_2 - \theta_1)
+% \end{array}
+% $$
+% 
+% Meanwhile, the only form of potential energy present in the system is
+% gravitational potential energy, which is associated with the height of
+% each of the masses.
+% 
+% $$ U = m_1 g l_1 \cos \theta_1 +
+% m_2 g \left( l_1 \cos \theta_1 + l_2 \cos \theta_2 \right) $$
+% 
+% The Lagrangian function is therefore
+% 
+% $$
+% \begin{array}{rcl}
+% L & = & \frac{1}{2} \left(M + m_1 + m_2\right) \dot{x}^2
+% + \frac{1}{2} (m_1 + m_2) l_1^2 \dot{\theta}_1^2
+% + \frac{1}{2} m_2 l_2^2 \dot{\theta}_2^2
+% \\&& \quad
+% + (m_1 + m_2) l_1 \dot x \dot \theta_1 \cos \theta_1
+% + m_2 l_2 \dot x \dot \theta_2 \cos \theta_2
+% + m_2 l_1 l_2 \dot \theta_1 \dot \theta_2 \cos (\theta_2 - \theta_1)
+% \\&& \quad
+% - (m_1 + m_2) g l_1 \cos \theta_1 + m_2 g l_2 \cos \theta_2
+% \end{array}
+% $$
+% 
+% We can now find the equations of motion from the Lagrangian. The first
+% equation is
+% 
+% $$
+% \frac{\partial d}{\partial dt} \left( \frac{\partial L}{\partial \dot{x}}
+% \right) - \frac{\partial L}{\partial x} = u
+% $$
+% 
+% We evaluate this function by finding
+% 
+% $$
+% \frac{\partial L}{\partial \dot{x}} = (M + m_1 + m_2) \dot x
+% + (m_1 + m_2) l_1 \dot \theta_1 \cos \theta_1
+% + m_2l_2 \dot \theta_2 \cos \theta_2
+% $$
+% 
+% $$
+% \begin{array}{rcl}
+% \frac{d}{dt}\frac{\partial L}{\partial \dot{x}} & = &(M + m_1 + m_2)\ddot{x}
+% + (m_1 + m_2) l_1 \ddot \theta_1 \cos \theta_1
+% + m_2 l_2 \ddot \theta_2 \cos \theta_2
+% \\&& \quad
+% - (m_1 + m_2) l_1 \dot \theta_1^2 \sin \theta_1
+% + m_2 l_2 \dot \theta_2^2 \sin \theta_2
+% \end{array}
+% $$
+% 
+% $$
+% \frac{\partial L}{\partial x} = 0
+% $$
+% 
+% Therefore, the first equation of motion is
+% 
+% $$
+% \begin{array}{rcl}
+% u & = &
+% (M + m_1 + m_2)\ddot{x}
+% + (m_1 + m_2) l_1 \ddot \theta_1 \cos \theta_1
+% + m_2 l_2 \ddot \theta_2 \cos \theta_2
+% \\&& \quad
+% - (m_1 + m_2) l_1 \dot \theta_1^2 \sin \theta_1
+% + m_2 l_2 \dot \theta_2^2 \sin \theta_2
+% \end{array}
+% $$
+% 
+% We can find the second equation of motion by finding
+% 
+% $$
+% \begin{array}{rcl}
+% \frac{\partial L}{\partial \dot{\theta}_1} & = &
+% (M + m_1 + m_2)\dot{x}
+% + (m_1 + m_2) l_1 \dot{\theta}_1
+% + (m_1 + m_2) l_1 \dot \theta_1 \cos \theta_1
+% \\&& \quad
+% + m_2 l_2 \dot \theta_2  \cos (\theta_2 - \theta_1)
+% \end{array}
+% $$
+% 
+% $$
+% \begin{array}{rcl}
+% \frac{d}{dt} \frac{\partial L}{\partial \dot{\theta}_1} & = &
+% (m_1 + m_2) l_1 \ddot x \cos \theta_1
+% + (m_1 + m_2) l_1^2 \ddot \theta_1
+% + m_2 l_1 l_2 \ddot \theta_2 \cos(\theta_2 - \theta_1 )
+% \\&& \quad
+% - m_2 l_1 l_2 \dot \theta_2^2 \sin(\theta_2 - \theta_1)
+% - (m_1 + m_2) \dot x \dot \theta_1 \sin \theta_1
+% \\&& \quad
+% + m_2 l_1 l_2 \dot \theta_1 \dot \theta_2 \sin(\theta_2 - \theta_1)
+% \end{array}
+% $$
+% 
+% $$
+% \begin{array}{rcl}
+% \frac{\partial L}{\partial \theta_1} & = &
+% -(m_1 + m_2) \dot x \dot \theta_1 \sin \theta_1
+% + m_2 l_1 l_2 \dot \theta_1 \dot \theta_2 \sin (\theta_2 - \theta_1)
+% \\&& \quad
+% + (m_1 + m_2) g l_1 \sin \theta_1
+% \end{array}
+% $$
+% 
+% The second equation of motion is therefore
+% 
+% $$
+% \begin{array}{rcl}
+% 0 &=&
+% (m_1 + m_2) l_1 \ddot x \cos \theta_1
+% + (m_1 + m_2) l_1^2 \ddot \theta_1
+% + m_2 l_1 l_2 \ddot \theta_2 \cos(\theta_2 - \theta_1 )
+% \\&& \quad
+% - m_2 l_1 l_2 \dot \theta_2^2 \sin(\theta_2 - \theta_1)
+% + (m_1 + m_2) g l_1 \sin \theta_1
+% \end{array}
+% $$
+% 
+% We can find the third equation of motion from
+% 
+% $$
+% \begin{array}{rcl}
+% \frac{\partial L}{\partial \dot{\theta}_2} & = &
+% m_2 l_2^2 \dot \theta_2
+% + m_2 l_2 \dot x \cos \theta_2
+% + m_2 l_1 l_2 \dot \theta_2 \cos (\theta_2 - \theta_1)
+% \end{array}
+% $$
+% 
+% $$
+% \begin{array}{rcl}
+% \frac{d}{dt} \frac{\partial L}{\partial \dot{\theta}_2} & = &
+% m_2 l_2 \ddot x \cos \theta_2
+% + m_2 l_1 l_2 \ddot \theta_1 \cos(\theta_2 - \theta_1)
+% + m_2 l_2 \ddot \theta_2
+% \\&& \quad
+% + m_2 l_1 l_2 \dot \theta_1^2 \sin(\theta_2 - \theta_1)
+% - m_2 l_2 \dot x \dot \theta_2 \sin \theta_2
+% \\&& \quad
+% - m_2 l_1 l_2 \dot \theta_1 \dot \theta_2 \sin (\theta_2 - \theta_1)
+% \end{array}
+% $$
+% 
+% $$
+% \begin{array}{rcl}
+% \frac{\partial L}{\partial \theta_1} & = &
+% - m_2 l_2 \dot x \dot \theta_2 \sin \theta_2
+% - m_2 l_1 l_2 \dot \theta_1 \dot \theta_2 \sin (\theta_2 - \theta_1)
+% - m_2 g l_2 \sin \theta_2
+% \end{array}
+% $$
+% 
+% The third equaton of motion is therefore
+% 
+% $$
+% \begin{array}{rcl}
+% 0 & = &
+% m_2 l_2 \ddot x \cos \theta_2
+% + m_2 l_1 l_2 \ddot \theta_1 \cos(\theta_2 - \theta_1)
+% + m_2 l_2 \ddot \theta_2
+% \\&& \quad
+% + m_2 l_1 l_2 \dot \theta_1^2 \sin(\theta_2 - \theta_1)
+% + m_2 g l_2 \sin \theta_2
+% \end{array}
+% $$
+% 
+%% Derivation of the state-space model
+% We can rearrange these equations into the form
+% 
+% $$
+% \mathbf D (\mathbf q ) \ddot q + \mathbf C (\mathbf q, \mathbf{\dot q})
+% + \mathbf g(\mathbf q) = \mathbf H u
+% $$
+% 
+% where
+% 
+% $$
+% \mathbf q = \left[\begin{array}{c}
+% x \\ \theta_1 \\ \theta_2
+% \end{array} \right]
+% $$
+% 
+% $$
+% \mathbf D = \left[ \begin{array}{ccc}
+% M + m_1 + m_2 &
+% (m_1 + m_2) l_1  \cos \theta_1 &
+% m_2 l_2  \cos \theta_2 \\
+% (m_1 + m_2) l_1 \cos \theta_1 &
+% (m_1 + m_2) l_1^2 &
+% m_2 l_1 l_2  \cos(\theta_2 - \theta_1 ) \\
+% m_2 l_2  \cos \theta_2 &
+% m_2 l_1 l_2  \cos(\theta_2 - \theta_1) &
+% m_2 l_2
+% \end{array} \right]
+% $$
+% 
+% $$
+% \mathbf C = \left[ \begin{array}{ccc}
+% 0 &
+% - (m_1 + m_2) l_1 \dot \theta_1 \sin \theta_1 &
+% m_2 l_2 \dot \theta_2 \sin \theta_2 \\
+% 0 &
+% 0 &
+% - m_2 l_1 l_2 \dot \theta_2 \sin(\theta_2 - \theta_1) \\
+% 0 &
+% - m_2 l_1 l_2 \dot \theta_1 \sin(\theta_2 - \theta_1) &
+% 0
+% \end{array} \right]
+% $$
+% 
+% $$
+% \mathbf g = \left[ \begin{array}{c}
+% 0 \\
+% (m_1 + m_2) g l_1 \sin \theta_1 \\
+% m_2 g l_2 \sin \theta_2
+% \end{array}\right]
+% $$
+% 
+% and
+% 
+% $$ \mathbf H = \left[ \begin{array}{c} 1 \\ 0 \\ 0 \end{array} \right] $$
+% 
+% We can transform this model into the state-space format by creating the state
+% vector
+% 
+% $$
+% \mathbf x =
+% \left[ \begin{array}{c} q \\ \dot q \end{array} \right] =
+% \left[\begin{array}{c} x \\ \theta_1 \\ \theta_2 \\
+% \dot x \\ \dot \theta_1 \\ \dot \theta_2 \end{array}\right]
+% $$
+% 
+% From our above equations, we can see that
+% 
+% $$
+% \mathbf{\dot x} =
+% \left[ \begin{array}{cc}
+% \mathbf 0 & \mathbf I_3 \\
+% \mathbf 0 & -\mathbf D^{-1} \mathbf C
+% \end{array} \right] x
+% +
+% \left[ \begin{array}{c}
+% \mathbf 0 \\ -\mathbf D^{-1} \mathbf g
+% \end{array} \right]
+% +
+% \left[ \begin{array}{c}
+% \mathbf 0 \\ -\mathbf D^{-1} \mathbf H
+% \end{array} \right] u
+% $$
+% 
+% or, in MATLAB syntax 
+##### SOURCE END #####
+--></body></html>

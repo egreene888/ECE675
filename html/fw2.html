@@ -1,0 +1,763 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Funwork 1</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-02-10"><meta name="DC.source" content="fw2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Funwork 1</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Evan Greene</a></li><li><a href="#2">The Nonlinear Model</a></li><li><a href="#3">The Linear Model</a></li><li><a href="#4">Controller Design</a></li><li><a href="#5">Observer design</a></li><li><a href="#6">Adding an extra actuator to the DIPC model</a></li><li><a href="#7">Animation</a></li></ul></div><h2 id="1">Evan Greene</h2><p>2020-02-13</p><pre class="codeinput">clear;
+close <span class="string">all</span>;
+</pre><h2 id="2">The Nonlinear Model</h2><p>In Funwork Assignment 1, we created a nonlinear state-space model of a double inverted pendulum on a cart. That model is given by the equation</p><p><img src="fw2_eq10857784239360950401.png" alt="$$&#xA;\mathbf{\dot x} =&#xA;\left[ \begin{array}{cc}&#xA;\mathbf 0 &amp; \mathbf I_3 \\&#xA;\mathbf 0 &amp; -\mathbf D^{-1} \mathbf C&#xA;\end{array} \right] x&#xA;+&#xA;\left[ \begin{array}{c}&#xA;\mathbf 0 \\ -\mathbf D^{-1} \mathbf g&#xA;\end{array} \right]&#xA;+&#xA;\left[ \begin{array}{c}&#xA;\mathbf 0 \\ -\mathbf D^{-1} \mathbf H&#xA;\end{array} \right] u&#xA;$$"></p><p>where <img src="fw2_eq11954210197802771420.png" alt="$$ x = \left] \begin{array}{cccccc} x &amp; \theta_1 &amp; \theta_2 &amp; \dot x &amp; \dot \theta_1 &amp; \dot \theta_2 \end{array} \right] $$"></p><p><img src="fw2_eq17813947276068977870.png" alt="$$&#xA;\mathbf D = \left[ \begin{array}{ccc}&#xA;M + m_1 + m_2 &amp;&#xA;(m_1 + m_2) l_1  \cos \theta_1 &amp;&#xA;m_2 l_2  \cos \theta_2 \\&#xA;(m_1 + m_2) l_1 \cos \theta_1 &amp;&#xA;(m_1 + m_2) l_1^2 &amp;&#xA;m_2 l_1 l_2  \cos(\theta_2 - \theta_1 ) \\&#xA;m_2 l_2  \cos \theta_2 &amp;&#xA;m_2 l_1 l_2  \cos(\theta_2 - \theta_1) &amp;&#xA;m_2 l_2^2&#xA;\end{array} \right]&#xA;$$"></p><p><img src="fw2_eq01083393376275893660.png" alt="$$&#xA;\mathbf C = \left[ \begin{array}{ccc}&#xA;0 &amp;&#xA;- (m_1 + m_2) l_1 \dot \theta_1 \sin \theta_1 &amp;&#xA;m_2 l_2 \dot \theta_2 \sin \theta_2 \\&#xA;0 &amp;&#xA;0 &amp;&#xA;- m_2 l_1 l_2 \dot \theta_2 \sin(\theta_2 - \theta_1) \\&#xA;0 &amp;&#xA;- m_2 l_1 l_2 \dot \theta_1 \sin(\theta_2 - \theta_1) &amp;&#xA;0&#xA;\end{array} \right]&#xA;$$"></p><p><img src="fw2_eq00385420017612187478.png" alt="$$&#xA;\mathbf g = \left[ \begin{array}{c}&#xA;0 \\&#xA;(m_1 + m_2) g l_1 \sin \theta_1 \\&#xA;m_2 g l_2 \sin \theta_2&#xA;\end{array}\right]&#xA;$$"></p><p><img src="fw2_eq01834054156488551006.png" alt="$$ \mathbf H = \left[ \begin{array}{c} 1 \\ 0 \\ 0 \end{array} \right] $$"></p><p>Or, in MATLAB code</p><pre class="codeinput"><span class="comment">% Establish constants</span>
+M = 1.5; <span class="comment">% kg</span>
+m1 = 0.5; <span class="comment">% kg</span>
+m2 = 0.75; <span class="comment">% kg</span>
+l1 = 0.5; <span class="comment">% m</span>
+l2 = 0.75; <span class="comment">% m</span>
+g = 9.81; <span class="comment">% m/s^2</span>
+m12 = m1 + m2;
+degrees = 180 / pi; <span class="comment">% degrees / radian</span>
+
+D = @(x) [M + m12, <span class="keyword">...</span>
+        m12 * l1 * cos(x(2)), <span class="keyword">...</span>
+        m2 * l2 * cos(x(3));
+        m12* l1 * cos(x(2)), <span class="keyword">...</span>
+        m12* l1^2, <span class="keyword">...</span>
+        m2 * l1 * l2 * cos(x(3) - x(2));
+        m2 * l2 * cos(x(3)), <span class="keyword">...</span>
+        m2 * l1 * l2 * cos(x(3) - x(2)), <span class="keyword">...</span>
+        m2 * l2^2 ];
+
+C = @(x) [ 0, -m12 * l1 * x(5) * sin(x(2)), -m2 * l2 * x(6) * sin(x(3));
+        0, 0,             -m2 * l1 * l2 * x(6) * sin(x(3) - x(2));
+        0, m2 * l1 * l2 * x(5) * sin(x(3) - x(2)), 0];
+
+G = @(x) [0,-m12 * g * l1 * sin(x(2)), -m2 * g * l2 * sin(x(3))]';
+
+H = [1 0 0]';
+
+f = @(x, u) [zeros(3),  eye(3); <span class="keyword">...</span>
+            zeros(3),   -D(x) \ C(x)] * x <span class="keyword">...</span>
+          + [zeros(3, 1); <span class="keyword">...</span>
+            -D(x)\G(x)] <span class="keyword">...</span>
+            + [zeros(3, 1); <span class="keyword">...</span>
+              D(x)\H]*u;
+</pre><h2 id="3">The Linear Model</h2><p>We can linearize the non-linear state-space model about x = 0 as</p><p><img src="fw2_eq17353765202539092289.png" alt="$$&#xA;\mathbf{\dot x} \approx&#xA;\frac{\partial \mathbf f}{\partial \mathbf x} (\mathbf x - \mathbf x_0)&#xA;+ \frac{\partial \mathbf f}{\partial u} (u - u_0)&#xA;$$"></p><p>Or, in MATLAB code</p><pre class="codeinput"><span class="comment">% create symbolic variables so the Jacobian function will work.</span>
+syms <span class="string">x</span> <span class="string">[6 1]</span>
+syms <span class="string">u</span>
+
+<span class="comment">% Calculate the jacobians of f with respect to</span>
+J_f_x = jacobian(f(x, u), x);
+J_f_u = jacobian(f(x, u), u);
+
+<span class="comment">% evaluate those jacobians at x = 0 and u = 0 to get our linearization.</span>
+A_linear = double(subs(J_f_x, x, zeros(6, 1)))
+b_linear = double(subs(J_f_u, x, zeros(6, 1)))
+
+<span class="comment">% we also need to find our output matrix C. In this case, the output is</span>
+<span class="comment">% just the first three elements of the state vector, so</span>
+C_linear = [eye(3), zeros(3)];
+</pre><pre class="codeoutput">
+A_linear =
+
+         0         0         0    1.0000         0         0
+         0         0         0         0    1.0000         0
+         0         0         0         0         0    1.0000
+         0   -8.1750         0         0         0         0
+         0   65.4000  -29.4300         0         0         0
+         0  -32.7000   32.7000         0         0         0
+
+
+b_linear =
+
+         0
+         0
+         0
+    0.6667
+   -1.3333
+         0
+
+</pre><h2 id="4">Controller Design</h2><p>Matlab's <tt>place</tt> function makes designing a controller for the system simple. It's just a matter of placing the poles.</p><p>We will place the poles at</p><p><img src="fw2_eq06255981569220461857.png" alt="$$ s = -2 \pm 2j, \, -3 \pm 3j, \, -4, \, -5 $$"></p><pre class="codeinput">clear <span class="string">x</span> <span class="string">u</span>
+
+<span class="comment">% poles = [-2 + 2j, -2 - 2j, -3 + 3j, -3 - 3j, -2, -3]';</span>
+poles = [-2 + 2j, -2 - 2j, -3 + 3j, -3 - 3j, -4, -5]';
+
+K = place(A_linear, b_linear, poles)
+
+controller = @(x) -K*x;
+</pre><pre class="codeoutput">
+K =
+
+    6.7334 -190.2083  222.6568    8.6412   -9.9294   38.3915
+
+</pre><h2 id="5">Observer design</h2><pre class="codeinput"><span class="comment">% The |place| function is can also be used for designing observers. Again,</span>
+<span class="comment">% the only necessary part is pole placement.</span>
+<span class="comment">%</span>
+<span class="comment">% We will place the poles at</span>
+<span class="comment">%</span>
+<span class="comment">% $$ s = - 5 \pm 5j, \, -10 \pm 10j, -15, -20 $$</span>
+
+poles = [-5 + 5j, -5 - 5j, -10 + 10j, -10 - 10j, -15, -20];
+
+
+<span class="comment">% The initial state is the same as in the Funwork #1 assignment.</span>
+x_init = [0 0.01 0.02 0 0 0]';
+
+L = place(A_linear', C_linear', poles)'
+observer = @(xhat, x, u) (A_linear-L*C_linear)*xhat + <span class="keyword">...</span>
+    b_linear*u + (L*C_linear*x);
+
+<span class="comment">% now we can animate the combined controller-observer compensator.</span>
+animate(f, controller, observer, x_init)
+pause
+</pre><pre class="codeoutput">
+L =
+
+   35.0000         0         0
+         0   14.9994    5.0085
+         0   -4.9915   15.0006
+  300.0000   -8.1750         0
+         0  165.3773  -29.3752
+         0  -32.6453  132.7227
+
+</pre><h2 id="6">Adding an extra actuator to the DIPC model</h2><p>If we wish to adjust our model to account for a second input in the form of a torque on the first joing, our equations of motion change very little. From the equation</p><p><img src="fw2_eq10857784239360950401.png" alt="$$&#xA;\mathbf{\dot x} =&#xA;\left[ \begin{array}{cc}&#xA;\mathbf 0 &amp; \mathbf I_3 \\&#xA;\mathbf 0 &amp; -\mathbf D^{-1} \mathbf C&#xA;\end{array} \right] x&#xA;+&#xA;\left[ \begin{array}{c}&#xA;\mathbf 0 \\ -\mathbf D^{-1} \mathbf g&#xA;\end{array} \right]&#xA;+&#xA;\left[ \begin{array}{c}&#xA;\mathbf 0 \\ -\mathbf D^{-1} \mathbf H&#xA;\end{array} \right] u&#xA;$$"></p><p>only the value of <img src="fw2_eq03377965608399397866.png" alt="$\mathbf H$"> changes. The values of <img src="fw2_eq15985340003955003305.png" alt="$\mathbf D$">, <img src="fw2_eq09094901167796838992.png" alt="$\mathbf C$"> and <img src="fw2_eq08415856685749593679.png" alt="$\mathbf g$"> remain the same.</p><h2 id="7">Animation</h2><p>To easily animate the DIPC, we can create a function to save having to repeat work.</p><pre class="codeinput"><span class="comment">% we can check whether this function works by calling animate with</span>
+<span class="comment">% the controller set to zero and the observer set to the actual state.</span>
+<span class="comment">% controller = @(x) 0;</span>
+<span class="comment">% observer = @(xhat, x, u)  f(x, u);</span>
+<span class="comment">% x_init = [0 0.01 0.02 0 0 0]';</span>
+<span class="comment">%</span>
+<span class="comment">% animate(f, controller, observer, x_init)</span>
+
+<span class="keyword">function</span> animate(f, controller, observer, x_init)
+<span class="comment">% inputs --</span>
+<span class="comment">% f             -   the state-space function dx/dt  = f(x, u)</span>
+<span class="comment">% controller    -   the function that relates the control input to the</span>
+<span class="comment">%                   estimated state, u = controller(~x)</span>
+<span class="comment">% observer      -   the function that relates the input and output to</span>
+<span class="comment">%                   the estimated state d~x/dt = observer(~x, x, u)</span>
+<span class="comment">% x_init        -   the initial state of the system.</span>
+<span class="comment">% outputs --</span>
+<span class="comment">% None. Plays animation</span>
+
+<span class="comment">% close all open figures</span>
+close <span class="string">all</span>
+figure(1)
+
+<span class="comment">% Set the paramters for Euler integration</span>
+tfinal = 10; <span class="comment">% seconds of animation</span>
+dt = 0.001; <span class="comment">% step size</span>
+time = linspace(0, tfinal, tfinal / dt);
+
+<span class="comment">% Set up arrays for logging data here</span>
+logging = 1;
+<span class="keyword">if</span> (logging)
+    x_log = zeros(6, length(time));
+    x_est_log = zeros(6, length(time));
+<span class="keyword">end</span>
+
+<span class="comment">% Set up the video recording</span>
+<span class="comment">% figure out the frame rate.</span>
+<span class="comment">% the step size is very small, so only update the graphics like once every</span>
+<span class="comment">% few frames.</span>
+frameRate = 60;
+stepsPerFrame = 1 / (dt * frameRate);
+
+<span class="comment">% flag for whether to record video.</span>
+record_video = 0;
+
+<span class="comment">% if the flag is true, create the movie</span>
+<span class="keyword">if</span> (record_video)
+    <span class="comment">% create movie</span>
+    v = VideoWriter(<span class="string">'DIPC.avi'</span>);
+    v.FrameRate = frameRate;
+    v.open()
+<span class="keyword">end</span>
+
+<span class="comment">% set up the current and estimated states</span>
+x_current = x_init;
+x_estimated = zeros(size(x_current));
+<span class="comment">% initialize input</span>
+u = 0;
+
+<span class="comment">% Create graphical elements</span>
+<span class="comment">% Rotation matrices</span>
+R1 = @(x) [cos(x(2)), -sin(x(2)); sin(x(2)), cos(x(2))];
+R2 = @(x) [cos(x(3)), -sin(x(3)); sin(x(3)), cos(x(3))];
+
+
+<span class="comment">% the location of the first mass from the base.</span>
+l1 = 0.5; l2 = 0.75; <span class="comment">% m</span>
+point1 = @(x) [x(1); 0] + R1(x) * [0; l1];
+point1_current = point1(x_current);
+
+<span class="comment">% the location of the second mass</span>
+point2 = @(x) point1(x) + R2(x) * [0;l2];
+point2_current = point2(x_current);
+
+<span class="comment">% The size of the cart</span>
+cart_width = 1; cart_height = 0.25;
+cart_position = [x_current(1) - 0.5*cart_width, -cart_height, <span class="keyword">...</span>
+                cart_width, cart_height];
+
+<span class="comment">% a line for the floor</span>
+floor = line(<span class="string">'xdata'</span>, [-2, 2], <span class="keyword">...</span>
+             <span class="string">'ydata'</span>, [-cart_height, -cart_height], <span class="keyword">...</span>
+             <span class="string">'linewidth'</span>, 2, <span class="string">'color'</span>, <span class="string">'k'</span>);
+
+<span class="comment">% a rectangle for the cart</span>
+cart = rectangle(<span class="string">'Position'</span>, cart_position, <span class="keyword">...</span>
+                    <span class="string">'EdgeColor'</span>, <span class="string">'b'</span>, <span class="string">'linewidth'</span>, 2);
+
+<span class="comment">% the hinge of the pendulum base</span>
+mass0 = line(<span class="string">'xdata'</span>, double(x_current(1)), <span class="keyword">...</span>
+             <span class="string">'ydata'</span>, 0, <span class="keyword">...</span>
+             <span class="string">'linewidth'</span>, 3, <span class="string">'color'</span>, <span class="string">'r'</span>, <span class="string">'marker'</span>, <span class="string">'*'</span>);
+
+<span class="comment">% line connecting the hinge and the first mass</span>
+bar1 = line(<span class="string">'xdata'</span>, [x_current(1), point1_current(1)], <span class="keyword">...</span>
+            <span class="string">'ydata'</span>, [0,            point1_current(2)], <span class="keyword">...</span>
+            <span class="string">'linewidth'</span>, 2, <span class="string">'color'</span>, <span class="string">'b'</span>);
+
+<span class="comment">% the first mass object.</span>
+mass1 = line(<span class="string">'xdata'</span>, point1_current(1), <span class="keyword">...</span>
+                <span class="string">'ydata'</span>, point1_current(2), <span class="keyword">...</span>
+                <span class="string">'linewidth'</span>, 5, <span class="string">'color'</span>, <span class="string">'r'</span>, <span class="string">'marker'</span>, <span class="string">'*'</span>);
+
+<span class="comment">% line connecting first and second masses</span>
+bar2 = line(<span class="string">'xdata'</span>, [point1_current(1), point2_current(1)],<span class="keyword">...</span>
+            <span class="string">'ydata'</span>, [point1_current(2), point2_current(2)], <span class="keyword">...</span>
+            <span class="string">'linewidth'</span>, 2, <span class="string">'color'</span>, <span class="string">'b'</span>);
+
+<span class="comment">% second mass</span>
+mass2 = line(<span class="string">'xdata'</span>, point2_current(1), <span class="keyword">...</span>
+             <span class="string">'ydata'</span>, point2_current(2), <span class="keyword">...</span>
+             <span class="string">'linewidth'</span>, 3, <span class="string">'color'</span>, <span class="string">'r'</span>, <span class="string">'marker'</span>, <span class="string">'*'</span>);
+
+<span class="comment">% graph settings</span>
+axis([-2 2, -1.5, 1.5])
+set(gca, <span class="string">'dataaspectratio'</span>, [1 1 1])
+axis <span class="string">on</span>
+grid <span class="string">on</span>
+box <span class="string">on</span>
+
+<span class="keyword">for</span> index = 1:length(time) - 1
+
+    <span class="comment">% find the controller input</span>
+    u = controller(x_estimated);
+
+    <span class="comment">% estimate the state using the observer</span>
+
+    <span class="comment">% find input as a function of the state in the last time step</span>
+    dx_estimated = observer(x_estimated, x_current, u);
+    <span class="comment">% Euler integration -- x[k] = x[k-1] + dx[k-1]/dt * dt</span>
+    x_estimated = x_estimated + dx_estimated * dt;
+
+    <span class="comment">% update plant model.</span>
+    dx_current = f(x_current, u); <span class="comment">% find dx/dt</span>
+    x_current = x_current + dx_current * dt;
+
+    <span class="comment">% Perform logging here</span>
+    <span class="keyword">if</span> (logging)
+        x_log(:, index) = x_current;
+        x_est_log(:, index) = x_estimated;
+    <span class="keyword">end</span>
+
+    <span class="comment">% allows the fps of the animation to be different from the euler</span>
+    <span class="comment">% integration step size.</span>
+    <span class="keyword">if</span> mod(index, stepsPerFrame) &lt; .999
+        <span class="comment">% update point1 and point2</span>
+        point1_current = point1(x_current);
+        point2_current = point2(x_current);
+        <span class="comment">% set all the graphical elements.</span>
+        cart_position = [x_current(1) - 0.5*cart_width, -cart_height, <span class="keyword">...</span>
+                        cart_width, cart_height];
+        set(cart,   <span class="string">'Position'</span>, cart_position);
+        set(mass0,  <span class="string">'xdata'</span>, x_current(1),              <span class="keyword">...</span>
+                    <span class="string">'ydata'</span>, 0);
+        set(bar1,   <span class="string">'xdata'</span>, [x_current(1), point1_current(1)],   <span class="keyword">...</span>
+                    <span class="string">'ydata'</span>, [0,            point1_current(2)]);
+        set(mass1,  <span class="string">'xdata'</span>, point1_current(1), <span class="keyword">...</span>
+                    <span class="string">'ydata'</span>, point1_current(2));
+        set(bar2,   <span class="string">'xdata'</span>, [point1_current(1), point2_current(1)],<span class="keyword">...</span>
+                    <span class="string">'ydata'</span>, [point1_current(2), point2_current(2)]);
+        set(mass2,  <span class="string">'xdata'</span>, point2_current(1), <span class="keyword">...</span>
+                    <span class="string">'ydata'</span>, point2_current(2))
+        drawnow;
+        <span class="keyword">if</span> (record_video)
+            frame = getframe;
+            writeVideo(v, frame);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> (record_video)
+    close(v);
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> (logging)
+    figure(2)
+    <span class="keyword">for</span> index = 1:6
+        subplot(2, 3, index)
+        plot(time, x_log(index, :))
+        hold <span class="string">on</span>
+<span class="comment">%         plot(time, x_est_log(index, :))</span>
+<span class="comment">%         hold off</span>
+<span class="comment">%         legend("x", "\hat{x}")</span>
+        xlabel(<span class="string">"time (s)"</span>);
+        ylabel(sprintf(<span class="string">"x%d"</span>, index));
+            <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="fw2_01.png" alt=""> <img vspace="5" hspace="5" src="fw2_02.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Funwork 1
+%% Evan Greene 
+% 
+% 2020-02-13
+clear;
+close all; 
+%% The Nonlinear Model
+% In Funwork Assignment 1, we created a nonlinear state-space model of a 
+% double inverted pendulum on a cart. That model is given by the equation
+% 
+% $$
+% \mathbf{\dot x} =
+% \left[ \begin{array}{cc}
+% \mathbf 0 & \mathbf I_3 \\
+% \mathbf 0 & -\mathbf D^{-1} \mathbf C
+% \end{array} \right] x
+% +
+% \left[ \begin{array}{c}
+% \mathbf 0 \\ -\mathbf D^{-1} \mathbf g
+% \end{array} \right]
+% +
+% \left[ \begin{array}{c}
+% \mathbf 0 \\ -\mathbf D^{-1} \mathbf H
+% \end{array} \right] u
+% $$
+%
+% 
+% where 
+% $$ x = \left] \begin{array}{cccccc} 
+% x & \theta_1 & \theta_2 & \dot x & \dot \theta_1 & \dot \theta_2 
+% \end{array} \right] $$
+% 
+% $$
+% \mathbf D = \left[ \begin{array}{ccc}
+% M + m_1 + m_2 &
+% (m_1 + m_2) l_1  \cos \theta_1 &
+% m_2 l_2  \cos \theta_2 \\
+% (m_1 + m_2) l_1 \cos \theta_1 &
+% (m_1 + m_2) l_1^2 &
+% m_2 l_1 l_2  \cos(\theta_2 - \theta_1 ) \\
+% m_2 l_2  \cos \theta_2 &
+% m_2 l_1 l_2  \cos(\theta_2 - \theta_1) &
+% m_2 l_2^2
+% \end{array} \right]
+% $$
+% 
+% $$
+% \mathbf C = \left[ \begin{array}{ccc}
+% 0 &
+% - (m_1 + m_2) l_1 \dot \theta_1 \sin \theta_1 &
+% m_2 l_2 \dot \theta_2 \sin \theta_2 \\
+% 0 &
+% 0 &
+% - m_2 l_1 l_2 \dot \theta_2 \sin(\theta_2 - \theta_1) \\
+% 0 &
+% - m_2 l_1 l_2 \dot \theta_1 \sin(\theta_2 - \theta_1) &
+% 0
+% \end{array} \right]
+% $$
+% 
+% $$
+% \mathbf g = \left[ \begin{array}{c}
+% 0 \\
+% (m_1 + m_2) g l_1 \sin \theta_1 \\
+% m_2 g l_2 \sin \theta_2
+% \end{array}\right]
+% $$
+% 
+% $$ \mathbf H = \left[ \begin{array}{c} 1 \\ 0 \\ 0 \end{array} \right] $$
+% 
+% Or, in MATLAB code
+
+% Establish constants
+M = 1.5; % kg 
+m1 = 0.5; % kg 
+m2 = 0.75; % kg 
+l1 = 0.5; % m
+l2 = 0.75; % m 
+g = 9.81; % m/s^2
+m12 = m1 + m2; 
+degrees = 180 / pi; % degrees / radian
+
+D = @(x) [M + m12, ...
+        m12 * l1 * cos(x(2)), ...
+        m2 * l2 * cos(x(3));
+        m12* l1 * cos(x(2)), ...
+        m12* l1^2, ...
+        m2 * l1 * l2 * cos(x(3) - x(2));
+        m2 * l2 * cos(x(3)), ...
+        m2 * l1 * l2 * cos(x(3) - x(2)), ...
+        m2 * l2^2 ];
+
+C = @(x) [ 0, -m12 * l1 * x(5) * sin(x(2)), -m2 * l2 * x(6) * sin(x(3));
+        0, 0,             -m2 * l1 * l2 * x(6) * sin(x(3) - x(2));
+        0, m2 * l1 * l2 * x(5) * sin(x(3) - x(2)), 0];
+
+G = @(x) [0,-m12 * g * l1 * sin(x(2)), -m2 * g * l2 * sin(x(3))]';
+
+H = [1 0 0]';
+
+f = @(x, u) [zeros(3),  eye(3); ...
+            zeros(3),   -D(x) \ C(x)] * x ...
+          + [zeros(3, 1); ...
+            -D(x)\G(x)] ...
+            + [zeros(3, 1); ...
+              D(x)\H]*u;
+
+%% The Linear Model
+% We can linearize the non-linear state-space model about x = 0 as 
+% 
+% $$ 
+% \mathbf{\dot x} \approx 
+% \frac{\partial \mathbf f}{\partial \mathbf x} (\mathbf x - \mathbf x_0)
+% + \frac{\partial \mathbf f}{\partial u} (u - u_0)
+% $$
+%
+% Or, in MATLAB code
+
+% create symbolic variables so the Jacobian function will work.
+syms x [6 1] 
+syms u 
+
+% Calculate the jacobians of f with respect to 
+J_f_x = jacobian(f(x, u), x); 
+J_f_u = jacobian(f(x, u), u);
+
+% evaluate those jacobians at x = 0 and u = 0 to get our linearization. 
+A_linear = double(subs(J_f_x, x, zeros(6, 1)))
+b_linear = double(subs(J_f_u, x, zeros(6, 1)))
+
+% we also need to find our output matrix C. In this case, the output is 
+% just the first three elements of the state vector, so 
+C_linear = [eye(3), zeros(3)];
+
+%% Controller Design
+% Matlab's |place| function makes designing a controller for the system 
+% simple. It's just a matter of placing the poles. 
+%
+% We will place the poles at 
+% 
+% $$ s = -2 \pm 2j, \, -3 \pm 3j, \, -4, \, -5 $$ 
+clear x u
+
+% poles = [-2 + 2j, -2 - 2j, -3 + 3j, -3 - 3j, -2, -3]';
+poles = [-2 + 2j, -2 - 2j, -3 + 3j, -3 - 3j, -4, -5]';
+
+K = place(A_linear, b_linear, poles)
+
+controller = @(x) -K*x;
+
+%% Observer design
+
+% The |place| function is can also be used for designing observers. Again, 
+% the only necessary part is pole placement. 
+% 
+% We will place the poles at 
+% 
+% $$ s = - 5 \pm 5j, \, -10 \pm 10j, -15, -20 $$
+
+poles = [-5 + 5j, -5 - 5j, -10 + 10j, -10 - 10j, -15, -20];
+
+
+% The initial state is the same as in the Funwork #1 assignment.
+x_init = [0 0.01 0.02 0 0 0]';
+
+L = place(A_linear', C_linear', poles)'
+observer = @(xhat, x, u) (A_linear-L*C_linear)*xhat + ...
+    b_linear*u + (L*C_linear*x);
+
+% now we can animate the combined controller-observer compensator. 
+animate(f, controller, observer, x_init)
+pause
+%% Adding an extra actuator to the DIPC model
+% 
+% If we wish to adjust our model to account for a second input in the form 
+% of a torque on the first joing, our equations of motion change very little.
+% From the equation
+% 
+% $$
+% \mathbf{\dot x} =
+% \left[ \begin{array}{cc}
+% \mathbf 0 & \mathbf I_3 \\
+% \mathbf 0 & -\mathbf D^{-1} \mathbf C
+% \end{array} \right] x
+% +
+% \left[ \begin{array}{c}
+% \mathbf 0 \\ -\mathbf D^{-1} \mathbf g
+% \end{array} \right]
+% +
+% \left[ \begin{array}{c}
+% \mathbf 0 \\ -\mathbf D^{-1} \mathbf H
+% \end{array} \right] u
+% $$
+% 
+% only the value of $\mathbf H$ changes. The values of $\mathbf D$, 
+% $\mathbf C$ and $\mathbf g$ remain the same. 
+
+%% Animation
+% To easily animate the DIPC, we can create a function to save having to
+% repeat work. 
+
+% we can check whether this function works by calling animate with 
+% the controller set to zero and the observer set to the actual state. 
+% controller = @(x) 0;
+% observer = @(xhat, x, u)  f(x, u);
+% x_init = [0 0.01 0.02 0 0 0]';
+% 
+% animate(f, controller, observer, x_init)
+
+function animate(f, controller, observer, x_init)
+% inputs REPLACE_WITH_DASH_DASH 
+% f             -   the state-space function dx/dt  = f(x, u)
+% controller    -   the function that relates the control input to the 
+%                   estimated state, u = controller(~x)
+% observer      -   the function that relates the input and output to 
+%                   the estimated state d~x/dt = observer(~x, x, u)
+% x_init        -   the initial state of the system.
+% outputs REPLACE_WITH_DASH_DASH 
+% None. Plays animation
+
+% close all open figures 
+close all
+figure(1)
+
+% Set the paramters for Euler integration
+tfinal = 10; % seconds of animation
+dt = 0.001; % step size
+time = linspace(0, tfinal, tfinal / dt);
+
+% Set up arrays for logging data here 
+logging = 1; 
+if (logging)
+    x_log = zeros(6, length(time));
+    x_est_log = zeros(6, length(time));
+end
+
+% Set up the video recording 
+% figure out the frame rate. 
+% the step size is very small, so only update the graphics like once every
+% few frames. 
+frameRate = 60;
+stepsPerFrame = 1 / (dt * frameRate);
+
+% flag for whether to record video.
+record_video = 0;
+
+% if the flag is true, create the movie
+if (record_video)
+    % create movie 
+    v = VideoWriter('DIPC.avi');
+    v.FrameRate = frameRate; 
+    v.open()
+end
+
+% set up the current and estimated states
+x_current = x_init;
+x_estimated = zeros(size(x_current));
+% initialize input
+u = 0;
+
+% Create graphical elements 
+% Rotation matrices
+R1 = @(x) [cos(x(2)), -sin(x(2)); sin(x(2)), cos(x(2))];
+R2 = @(x) [cos(x(3)), -sin(x(3)); sin(x(3)), cos(x(3))];
+ 
+
+% the location of the first mass from the base. 
+l1 = 0.5; l2 = 0.75; % m 
+point1 = @(x) [x(1); 0] + R1(x) * [0; l1]; 
+point1_current = point1(x_current);
+
+% the location of the second mass 
+point2 = @(x) point1(x) + R2(x) * [0;l2];
+point2_current = point2(x_current);
+
+% The size of the cart
+cart_width = 1; cart_height = 0.25;
+cart_position = [x_current(1) - 0.5*cart_width, -cart_height, ...
+                cart_width, cart_height];
+            
+% a line for the floor 
+floor = line('xdata', [-2, 2], ...
+             'ydata', [-cart_height, -cart_height], ...
+             'linewidth', 2, 'color', 'k');
+
+% a rectangle for the cart
+cart = rectangle('Position', cart_position, ... 
+                    'EdgeColor', 'b', 'linewidth', 2);
+
+% the hinge of the pendulum base
+mass0 = line('xdata', double(x_current(1)), ...
+             'ydata', 0, ...
+             'linewidth', 3, 'color', 'r', 'marker', '*'); 
+
+% line connecting the hinge and the first mass
+bar1 = line('xdata', [x_current(1), point1_current(1)], ...
+            'ydata', [0,            point1_current(2)], ...
+            'linewidth', 2, 'color', 'b');
+        
+% the first mass object. 
+mass1 = line('xdata', point1_current(1), ...
+                'ydata', point1_current(2), ...
+                'linewidth', 5, 'color', 'r', 'marker', '*');
+
+% line connecting first and second masses
+bar2 = line('xdata', [point1_current(1), point2_current(1)],...
+            'ydata', [point1_current(2), point2_current(2)], ...
+            'linewidth', 2, 'color', 'b');
+        
+% second mass 
+mass2 = line('xdata', point2_current(1), ...
+             'ydata', point2_current(2), ...
+             'linewidth', 3, 'color', 'r', 'marker', '*');
+            
+% graph settings
+axis([-2 2, -1.5, 1.5])
+set(gca, 'dataaspectratio', [1 1 1])
+axis on
+grid on 
+box on
+
+for index = 1:length(time) - 1
+    
+    % find the controller input
+    u = controller(x_estimated);
+    
+    % estimate the state using the observer
+    
+    % find input as a function of the state in the last time step
+    dx_estimated = observer(x_estimated, x_current, u);
+    % Euler integration REPLACE_WITH_DASH_DASH x[k] = x[k-1] + dx[k-1]/dt * dt
+    x_estimated = x_estimated + dx_estimated * dt;
+    
+    % update plant model. 
+    dx_current = f(x_current, u); % find dx/dt
+    x_current = x_current + dx_current * dt;
+    
+    % Perform logging here
+    if (logging)
+        x_log(:, index) = x_current;
+        x_est_log(:, index) = x_estimated;
+    end 
+    
+    % allows the fps of the animation to be different from the euler 
+    % integration step size. 
+    if mod(index, stepsPerFrame) < .999
+        % update point1 and point2
+        point1_current = point1(x_current);
+        point2_current = point2(x_current);
+        % set all the graphical elements.
+        cart_position = [x_current(1) - 0.5*cart_width, -cart_height, ...
+                        cart_width, cart_height];
+        set(cart,   'Position', cart_position);
+        set(mass0,  'xdata', x_current(1),              ...
+                    'ydata', 0);
+        set(bar1,   'xdata', [x_current(1), point1_current(1)],   ...
+                    'ydata', [0,            point1_current(2)]);
+        set(mass1,  'xdata', point1_current(1), ...
+                    'ydata', point1_current(2));
+        set(bar2,   'xdata', [point1_current(1), point2_current(1)],...
+                    'ydata', [point1_current(2), point2_current(2)]);
+        set(mass2,  'xdata', point2_current(1), ...
+                    'ydata', point2_current(2))  
+        drawnow;
+        if (record_video)
+            frame = getframe;
+            writeVideo(v, frame);
+        end
+    end 
+end 
+
+if (record_video)
+    close(v);
+end
+
+if (logging)
+    figure(2)
+    for index = 1:6
+        subplot(2, 3, index)
+        plot(time, x_log(index, :))
+        hold on
+%         plot(time, x_est_log(index, :))
+%         hold off
+%         legend("x", "\hat{x}")
+        xlabel("time (s)");
+        ylabel(sprintf("x%d", index)); 
+            end 
+end 
+end 
+##### SOURCE END #####
+--></body></html>

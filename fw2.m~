@@ -172,7 +172,7 @@ animate(f, controller, observer, x_init)
 figure(1)
 title("DIPC with controller-observer compensator");
 figure(2)
-sgtitle("Elements of the state vector for the DIPC");
+sgtitle("Element of the state vector for the DIPC");
 pause
 %% Adding an extra actuator to create a MIMO model.
 % 
@@ -265,13 +265,6 @@ observer = @(xhat, y, u) (A_linear-L*C_linear)*xhat + ...
 
 % The initial state is the same as in the Funwork #1 assignment.
 animate(f, controller, observer, x_init)
-figure(1) 
-title("Two-input DIPC with controller-observer compensator")
-figure(2)
-sgtitle("Elements of the state vector for the two-input DIPC")
-
-% This is where the figure should be that animates the two-input DIPC. 
-% If it's not here, I don't know why. 
 %% Animation
 % To easily animate the DIPC, we can create a function to save having to
 % repeat work. 

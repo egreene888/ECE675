@@ -539,7 +539,7 @@ frameRate = 60;
 stepsPerFrame = 1 / (dt * frameRate);
 
 % flag for whether to record video.
-record_video = 0;
+record_video = 1;
 
 % if the flag is true, create the movie
 if (record_video)
