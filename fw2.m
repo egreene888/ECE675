@@ -118,8 +118,8 @@ f = @(x, u) [zeros(3),  eye(3); ...
 % Or, in MATLAB code
 
 % create symbolic variables so the Jacobian function will work.
-syms x [6 1] 
-syms u 
+x = sym('x', [6 1]);
+u = sym('u');
 
 % Calculate the jacobians of f with respect to 
 J_f_x = jacobian(f(x, u), x); 
@@ -142,9 +142,9 @@ C_linear = [eye(3), zeros(3)];
 % 
 % $$ s = -2 \pm 2j, \, -3 \pm 3j, \, -4, \, -5 $$ 
 
-p = [-2 + 2j, -2 - 2j, -3 + 3j, -3 - 3j, -4, -5]';
+controller_poles = [-2 + 2i, -2 - 2i, -3 + 3i, -3 - 3i, -4, -5];
 
-K = place(A_linear, b_linear, p)
+K = place(A_linear, b_linear, controller_poles)
 
 controller = @(x) -K*x;
 
@@ -157,9 +157,9 @@ controller = @(x) -K*x;
 % 
 % $$ s = - 5 \pm 5j, \, -10 \pm 10j, -15, -20 $$
 
-p = [-5 + 5i, -5 - 5i, -10 + 10i, -10 - 10i, -15, -20];
+observer_poles = [-5 + 5j, -5 - 5j, -10 + 10j, -10 - 10j, -15, -20];
 
-L = place(A_linear', C_linear', p)'
+L = place(A_linear', C_linear', observer_poles)'
 observer = @(xhat, y, u) (A_linear-L*C_linear)*xhat + ...
     b_linear*u + L*y;
 %% Animation of the combined controller-observer compensator
@@ -167,10 +167,109 @@ observer = @(xhat, y, u) (A_linear-L*C_linear)*xhat + ...
 
 % Set an inital state. If it's set too far from zero the controller will
 % fail. 
+% x_init = [0 0.05 0.08 0 0 0]';
 x_init = [0 0.02 0.03 0 0 0]';
 animate(f, controller, observer, x_init)
 figure(1)
 title("DIPC with controller-observer compensator");
+figure(2)
+sgtitle("Elements of the state vector for the DIPC");
+pause
+
+%% Controller design using linear matrix inequalities
+%
+% To design a controller, we want to find $K$ such that 
+% 
+% $$ (\mathbf A - \mathbf{BK})^T P + \mathbf P( \mathbf A - \mathbf{BK}) 
+% \prec 0 $$
+% 
+% or, alternately stated, 
+% 
+% $$ \mathbf A^T \mathbf P + \mathbf{PA} + 
+% \mathbf K^T \mathbf B^T \mathbf P -  \mathbf P \mathbf B \prec 0 $$
+% 
+% To express this equation as a linear matrix equality, we need to make the 
+% substitutions $\mathbf S = \mathbf P^{-1}$ and $\mathbf Z = \mathbf{KS}$ 
+% to get 
+% 
+% $$ \mathbf{SA}^T - \mathbf{AS} - \mathbf Z^T \mathbf B^T - \mathbf{BZ} 
+% \prec 0 $$
+% 
+% To add some extra stability, we can add an extra term to the inequality
+% $$ \mathbf{SA}^T - \mathbf{AS} - \mathbf Z^T \mathbf B^T - \mathbf{BZ} 
+% + 2 \alpha \mathbf P \prec 0 $$
+%
+% We can then use MATLAB's LMI solver to find K
+alpha = 0.1;
+setlmis([]);
+S = lmivar(1, [6 1]);
+P = inv(S);
+Z = lmivar(2, [1 6]);
+lmiterm([1 1 1 S], A_linear, 1, 's')
+lmiterm([1 1 1 P], 2*alpha, 1)
+lmiterm([-1 1 1 Z], b_linear, 1, 's')
+lmiterm([-2 1 1 P], 1, 1)
+
+lmis = getlmis;
+[tmin, xfeas] = feasp(lmis);
+S = dec2mat(lmis, xfeas, S);
+Z = dec2mat(lmis, xfeas, Z);
+K_lmi = Z / S
+
+
+controller_lmi = @(x) -K_lmi*x;
+
+%% Observer design using linear matrix inequalities.
+% 
+% To design an observer, we want to find $L$ such that 
+% 
+% $$ ( \mathbf A - \mathbf{LC})^T \mathbf P
+% + \mathbf P (\mathbf A - \mathbf{LC}) \prec 0$$ 
+% 
+% or alternately stated, 
+% 
+% $$ \mathbf A^T \mathbf P + \mathbf{PA} - \mathbf C^T \mathbf L^T \mathbf P
+% - \mathbf{PLC} \prec 0 $$
+% 
+% To express this equation as a linear matrix inequality, we need to make 
+% the substitution $Y = PL$. Our inequality is then
+% 
+% $$ \mathbf A^T \mathbf P + \mathbf{PA} - (\mathbf YC) - (\mathbf YC)^T 
+% \prec 0 $$
+% 
+% To add some extra stability we can add an extra term to the inequality.
+% $$ \mathbf A^T \mathbf P + \mathbf{PA} - (\mathbf YC) - (\mathbf YC)^T 
+% + 2\alpha \mathbf P \prec 0 $$
+% 
+% We can then use the LMI solver to find L. 
+alpha = .5;
+setlmis([]);
+P = lmivar(1, [6 1]);
+Y = lmivar(2, [6 3]);
+lmiterm([1 1 1 P], 1, A_linear, 's');
+lmiterm([1 1 1 P], 2*alpha, 1)
+lmiterm([-1 1 1 Y], 1, C_linear, 's');
+
+lmiterm([-2 1 1 P], 1, 1)
+
+lmis = getlmis;
+[tmin, xfeas] = feasp(lmis);
+P = dec2mat(lmis, xfeas, P);
+Y = dec2mat(lmis, xfeas, Y);
+
+L_lmi = P\Y
+
+observer_lmi = @(xhat, y, u) (A_linear-L_lmi*C_linear)*xhat + ...
+    b_linear*u + L_lmi*y;
+
+%% Animation of the LMI-derived controller-observer compensator
+% Now we can animate the combined controller-observer compensator. 
+
+% initial state is the same as the controller-observer system designed 
+% with pole placement
+animate(f, controller_lmi, observer_lmi, x_init)
+figure(1)
+title("DIPC with LMI-derived controller-observer compensator");
 figure(2)
 sgtitle("Elements of the state vector for the DIPC");
 pause
@@ -225,8 +324,8 @@ f = @(x, u) [zeros(3),  eye(3); ...
 % The MATLAB code also changes very little. 
 
 % create symbolic variables so the Jacobian function will work.
-syms x [6 1] 
-syms u [2 1]
+x = sym('x', [6 1]);
+u = sym('u', [2 1]);
 
 % Calculate the jacobians of f with respect to 
 J_f_x = jacobian(f(x, u), x); 
@@ -246,32 +345,84 @@ C_linear = [eye(3), zeros(3)];
 % model. We can again use the |place| function with the same poles as 
 % before
 
-p = [-2 + 2i, -2 - 2i, -3 + 3i, -3 - 3i, -4, -5];
-
-K = place(A_linear, b_linear, p)
+K = place(A_linear, b_linear, controller_poles)
 controller = @(x) -K*x;
 
 %% Observer design for the MIMO model 
 % Designing an observer for the MIMO model is again very similar to the 
 % SIMO model. Using MATLAB's |place| and the same poles as before, we find
-p = [-5 + 5j, -5 - 5j, -10 + 10j, -10 - 10j, -15, -20];
 
-L = place(A_linear', C_linear', p)'
+L = place(A_linear', C_linear', observer_poles)'
 observer = @(xhat, y, u) (A_linear-L*C_linear)*xhat + ...
     b_linear*u + L*y;
 
 %% Animation for the controller-observer compensator for the MIMO model
 % Now we can animate the combined controller-observer compensator. 
 
-% The initial state is the same as in the Funwork #1 assignment.
+% The initial state is the same as in the SIMO animation.
 animate(f, controller, observer, x_init)
 figure(1) 
 title("Two-input DIPC with controller-observer compensator")
 figure(2)
 sgtitle("Elements of the state vector for the two-input DIPC")
+pause
+%% Controller design using linear matrix inequalities for the MIMO model
+%
+% Controller design using the LMI solver is very similar for the MIMO model
+% compared to the SISO model. The only difference is the size of $Z$. 
+% 
+alpha = 0.1;
+setlmis([]);
+S = lmivar(1, [6 1]);
+P = inv(S);
+Z = lmivar(2, [2 6]);
+lmiterm([1 1 1 S], A_linear, 1, 's')
+lmiterm([1 1 1 P], 2*alpha, 1)
+lmiterm([-1 1 1 Z], b_linear, 1, 's')
+lmiterm([-2 1 1 P], 1, 1)
 
-% This is where the figure should be that animates the two-input DIPC. 
-% If it's not here, I don't know why. 
+lmis = getlmis;
+[tmin, xfeas] = feasp(lmis);
+S = dec2mat(lmis, xfeas, S);
+Z = dec2mat(lmis, xfeas, Z);
+K_lmi = Z / S
+
+
+controller_lmi = @(x) -K_lmi*x;
+
+%% Observer Design Using Linear Matrix Inequalities.
+% 
+% Observer design also differs very little between the MIMO and SISO case. 
+alpha = .5;
+setlmis([]);
+P = lmivar(1, [6 1]);
+Y = lmivar(2, [6 3]);
+lmiterm([1 1 1 P], 1, A_linear, 's');
+lmiterm([1 1 1 P], 2*alpha, 1)
+lmiterm([-1 1 1 Y], 1, C_linear, 's');
+
+lmiterm([-2 1 1 P], 1, 1)
+
+lmis = getlmis;
+[tmin, xfeas] = feasp(lmis);
+P = dec2mat(lmis, xfeas, P);
+Y = dec2mat(lmis, xfeas, Y);
+
+L_lmi = P\Y
+
+observer_lmi = @(xhat, y, u) (A_linear-L_lmi*C_linear)*xhat + ...
+    b_linear*u + L_lmi*y;
+
+%% Animation of the LMI-derived controller-observer compensator
+% Now we can animate the combined controller-observer compensator. 
+
+% initial state is the same as the controller-observer system designed 
+% with pole placement
+animate(f, controller_lmi, observer_lmi, x_init)
+figure(1)
+title("Two-input DIPC with LMI-derived controller-observer compensator");
+figure(2)
+sgtitle("Elements of the state vector for the DIPC");
 %% Animation
 % To easily animate the DIPC, we can create a function to save having to
 % repeat work. 
@@ -300,8 +451,8 @@ close all
 figure(1)
 
 % Set the paramters for Euler integration
-tfinal = 10; % seconds of animation
-dt = 0.001; % step size
+tfinal = 5; % seconds of animation
+dt = 0.0001; % step size
 time = linspace(0, tfinal, tfinal / dt);
 
 % Set up arrays for logging data here 
